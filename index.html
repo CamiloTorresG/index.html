@@ -257,44 +257,59 @@
     </footer>
 
     <script>
-        // Tu URL pública de Google Sheets (Versión CSV)
+        // Tu ID de publicación (extraído de tu enlace)
         const sheetID = "2PACX-1vRUzvNCSD2wN-L-UM4h7gQu3nb9dad_j6WYMzwn7zj3n_c4vpZucNHcHdU-ECFcLogBz2OF5ndZBS__";
         const csvUrl = `https://docs.google.com/spreadsheets/d/e/${sheetID}/pub?output=csv`;
 
         async function updateAvailability() {
             try {
+                console.log("Intentando conectar con:", csvUrl); // Para depuración
                 const response = await fetch(csvUrl);
                 const data = await response.text();
                 
-                // Convertir CSV a filas
-                const rows = data.split('\n').map(row => row.split(','));
-                
-                // Lógica de Negocio: Contar Eras Disponibles
-                // Asumimos que la columna 1 (índice 1) es "Estado" y columna 0 es "ID_Era"
-                // Buscamos cuántas NO dicen "Asignada" entre las primeras 25 eras.
+                // 1. DETECCIÓN INTELIGENTE DE SEPARADOR (Coma o Punto y Coma)
+                // Si la primera línea tiene ';', asumimos que es el separador.
+                let separator = ',';
+                const firstLine = data.split('\n')[0];
+                if (firstLine && firstLine.includes(';')) {
+                    separator = ';';
+                }
+
+                console.log("Separador detectado:", separator);
+
+                // 2. PROCESAMIENTO
+                const rows = data.split('\n').map(row => row.split(separator));
                 
                 let occupiedCount = 0;
-                const totalEras = 25; // Nuestro límite de venta
+                const totalEras = 25; 
                 
                 // Empezamos en i=1 para saltar el encabezado
                 for (let i = 1; i < rows.length; i++) {
                     const row = rows[i];
+                    // Aseguramos que la fila tenga datos
                     if (row.length > 1) {
-                        const idEra = parseInt(row[0]); // Columna A
-                        const estado = row[1]; // Columna B (Estado)
+                        // Limpiamos comillas que Google a veces añade (ej: "1" -> 1)
+                        const rawId = row[0].replace(/['"]+/g, ''); 
+                        const idEra = parseInt(rawId); 
                         
-                        // Solo contamos las eras de clientes (1 a 25)
-                        if (idEra <= 25 && estado && estado.trim() === "Asignada") {
+                        // Limpiamos el estado (quitamos comillas y espacios)
+                        let estado = row[1] ? row[1].replace(/['"]+/g, '').trim().toLowerCase() : "";
+
+                        // Lógica de conteo (busca "asignada" en minúsculas para ser más flexible)
+                        if (!isNaN(idEra) && idEra <= 25 && estado === "asignada") {
                             occupiedCount++;
                         }
                     }
                 }
 
                 const available = totalEras - occupiedCount;
-                const banner = document.getElementById('availability-banner');
+                console.log("Eras ocupadas encontradas:", occupiedCount); // Para depuración
 
+                // 3. ACTUALIZAR PANTALLA
+                const banner = document.getElementById('availability-banner');
                 if (available > 0) {
                     banner.innerHTML = `🔥 ¡DÉMONOS PRISA! SOLO QUEDAN <strong>${available}</strong> CUPOS DISPONIBLES (De ${totalEras})`;
+                    banner.style.backgroundColor = "#e07a5f"; // Color Naranja
                 } else {
                     banner.innerHTML = `🚫 ¡LO SENTIMOS! HEMOS VENDIDO TODOS LOS CUPOS POR ESTA TEMPORADA.`;
                     banner.style.backgroundColor = "#e63946"; // Rojo alerta
@@ -302,11 +317,11 @@
 
             } catch (error) {
                 console.error('Error al leer la huerta:', error);
-                document.getElementById('availability-banner').innerText = "⚠️ No pudimos conectar con la huerta. Intenta recargar.";
+                document.getElementById('availability-banner').innerText = "⚠️ Estamos actualizando el inventario...";
             }
         }
 
-        // Ejecutar al cargar la página
+        // Ejecutar al cargar
         updateAvailability();
     </script>
 
