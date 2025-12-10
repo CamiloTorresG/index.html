@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Huerta Don Tarcisio | Tu Farmville Real</title>
+    <style>
+        :root {
+            --primary: #2d6a4f; /* Verde Tarcisio */
+            --secondary: #d8f3dc; /* Verde Claro */
+            --accent: #e07a5f; /* Naranja Frutos */
+            --text: #1b4332;
+        }
+        body {
+            font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            color: var(--text);
+            background-color: #f7f9f8;
+        }
+        /* Header */
+        header {
+            background-color: white;
+            padding: 20px 5%;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .logo {
+            font-size: 24px;
+            font-weight: bold;
+            color: var(--primary);
+        }
+        .nav-btn {
+            background-color: var(--primary);
+            color: white;
+            padding: 10px 20px;
+            text-decoration: none;
+            border-radius: 25px;
+            font-weight: bold;
+        }
+        
+        /* Hero Section */
+        .hero {
+            background-color: var(--primary);
+            color: white;
+            text-align: center;
+            padding: 60px 20px;
+            background-image: linear-gradient(rgba(45, 106, 79, 0.8), rgba(45, 106, 79, 0.9)), url('https://images.unsplash.com/photo-1591857177580-dc82b9ac4e10?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80');
+            background-size: cover;
+            background-position: center;
+        }
+        .hero h1 { font-size: 48px; margin-bottom: 10px; }
+        .hero p { font-size: 20px; margin-bottom: 30px; }
+        
+        /* Disponibilidad (Live Data Simulator) */
+        .availability-banner {
+            background-color: var(--accent);
+            color: white;
+            text-align: center;
+            padding: 15px;
+            font-weight: bold;
+            font-size: 18px;
+            margin-top: -20px;
+            margin-bottom: 40px;
+            width: 90%;
+            margin-left: auto;
+            margin-right: auto;
+            border-radius: 8px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+        }
+
+        /* Container */
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        /* Value Props */
+        .value-props {
+            display: flex;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            margin: 50px 0;
+        }
+        .prop {
+            flex-basis: 30%;
+            text-align: center;
+            background: white;
+            padding: 30px 20px;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+            margin-bottom: 20px;
+        }
+        .prop h3 { color: var(--primary); }
+
+        /* Product Detail */
+        .product-highlight {
+            background-color: white;
+            border-left: 5px solid var(--primary);
+            padding: 30px;
+            margin: 40px 0;
+            border-radius: 5px;
+        }
+        .kit-details ul {
+            columns: 2;
+            -webkit-columns: 2;
+            -moz-columns: 2;
+        }
+
+        /* Pricing */
+        .pricing {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            margin-top: 40px;
+            flex-wrap: wrap;
+        }
+        .card {
+            background: white;
+            padding: 30px;
+            border-radius: 15px;
+            text-align: center;
+            width: 300px;
+            border: 1px solid #eee;
+            transition: transform 0.3s;
+        }
+        .card:hover { transform: translateY(-5px); border-color: var(--primary); }
+        .card.featured {
+            border: 2px solid var(--primary);
+            background-color: #f1f8f4;
+            position: relative;
+        }
+        .badge {
+            position: absolute;
+            top: -15px;
+            left: 50%;
+            transform: translateX(-50%);
+            background-color: var(--accent);
+            color: white;
+            padding: 5px 15px;
+            border-radius: 15px;
+            font-size: 12px;
+            font-weight: bold;
+        }
+        .price { font-size: 36px; font-weight: bold; color: var(--primary); }
+        .period { color: #666; font-size: 14px; }
+        .cta-btn {
+            display: block;
+            background-color: var(--primary);
+            color: white;
+            padding: 15px;
+            margin-top: 20px;
+            text-decoration: none;
+            border-radius: 5px;
+            font-weight: bold;
+            transition: background 0.3s;
+        }
+        .cta-btn:hover { background-color: #1b4332; }
+        .cta-outline {
+            background-color: transparent;
+            border: 2px solid var(--primary);
+            color: var(--primary);
+        }
+        .cta-outline:hover { background-color: var(--primary); color: white; }
+
+        /* Footer */
+        footer {
+            text-align: center;
+            padding: 40px;
+            background-color: #1b4332;
+            color: white;
+            margin-top: 60px;
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <div class="logo">🌱 Don Tarcisio</div>
+        <a href="#" class="nav-btn">Mi Huerta (Login)</a>
+    </header>
+
+    <div class="hero">
+        <h1>Tu Huerta Personal en la Sabana</h1>
+        <p>Configura tu kit, monitorea el crecimiento y recibe tu cosecha orgánica en casa.</p>
+    </div>
+
+    <div class="availability-banner">
+        🔥 ¡ATENCIÓN! SOLO QUEDAN 4 CUPOS DISPONIBLES (De 25 Totales)
+    </div>
+
+    <div class="container">
+        
+        <div class="value-props">
+            <div class="prop">
+                <h3>1. Configura</h3>
+                <p>Elige tu kit "Rentabilidad Plus". Incluye nuestra base de hojas verdes y el módulo premium de tomates y pimentones.</p>
+            </div>
+            <div class="prop">
+                <h3>2. Monitorea</h3>
+                <p>Tu parcela de 15.6m² es real. Nosotros la sembramos, cuidamos y tú ves el progreso desde tu celular.</p>
+            </div>
+            <div class="prop">
+                <h3>3. Recibe</h3>
+                <p>Cosechas semanales frescas en la puerta de tu casa. Valor total de la cosecha semestral: <strong>$639.100</strong>.</p>
+            </div>
+        </div>
+
+        <div class="product-highlight">
+            <h2>📦 ¿Qué incluye el Kit "Rentabilidad Plus"?</h2>
+            <p>Diseñado para maximizar el valor de tu inversión. Recibirás semanalmente:</p>
+            <div class="kit-details">
+                <ul>
+                    <li>🥬 <strong>Lechugas Salanova & Romana</strong> (Base)</li>
+                    <li>🥗 <strong>Espinaca & Acelga de Colores</strong> (Base)</li>
+                    <li>🧅 <strong>Cebolla Larga & Aromáticas</strong> (Base)</li>
+                    <li>🍅 <strong>Tomates Cherry Premium</strong> (Módulo Frutos)</li>
+                    <li>🌶️ <strong>Pimentones & Ajíes</strong> (Módulo Frutos)</li>
+                </ul>
+            </div>
+            <p><small><em>* Además, acceso a nuestras 3 eras de Buffer para pedir Brócoli, Kale o Raíces extra.</em></small></p>
+        </div>
+
+        <h2 style="text-align: center;">Elige tu Plan de Suscripción</h2>
+        <div class="pricing">
+            <div class="card">
+                <h3>Pago Mensual</h3>
+                <div class="price">$150.000</div>
+                <div class="period">COP / Mes (x 6 meses)</div>
+                <p>Total Semestre: $900.000</p>
+                <hr style="border: 0; border-top: 1px solid #eee; margin: 20px 0;">
+                <p>Flexibilidad total.</p>
+                <a href="#" class="cta-btn cta-outline">Elegir Mensual</a>
+            </div>
+
+            <div class="card featured">
+                <div class="badge">MEJOR VALOR - AHORRAS 30%</div>
+                <h3>Pago Anticipado</h3>
+                <div class="price">$630.000</div>
+                <div class="period">COP / Un solo pago</div>
+                <p>Cubre todo el semestre</p>
+                <hr style="border: 0; border-top: 1px solid #eee; margin: 20px 0;">
+                <p><strong>Precio casi igual al valor de la cosecha ($639k)</strong></p>
+                <a href="#" class="cta-btn">Elegir Anticipado</a>
+            </div>
+        </div>
+
+    </div>
+
+    <footer>
+        <p>© 2025 Don Tarcisio S.A.S. - Transformando el campo con tecnología.</p>
+        <p><small>Operación en Chía y Cajicá, Cundinamarca.</small></p>
+    </footer>
+
+</body>
+</html>
