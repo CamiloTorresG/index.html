@@ -46,111 +46,16 @@
         <h2>👋 Hola, Socio <span id="dash-id"></span></h2>
         <p>Este es el estado real de tus cultivos hoy:</p>
         <div id="crops-container">Cargando datos...</div>
-        <button onclick="location.reload()" style="margin-top:20px; background:#999">Salir</button>
+        <button onclick="location.reload()" style="margin-top:20px; background:#999; color:white; border:none; padding:10px 20px; border-radius:5px; cursor:pointer;">Salir</button>
     </div>
 
     <script>
         // ==========================================
-        // CONFIGURACIÓN DE ENLACES (IMPORTANTE)
+        // CONFIGURACIÓN DE ENLACES
         // ==========================================
         
-        // ENLACE 1: Para el inventario (Hoja "Configuración de Eras") - Déjalo como estaba
+        // Enlace 1 (Inventario General) - No se usa en esta vista, pero lo dejamos por si acaso.
         const sheetID = "2PACX-1vRUzvNCSD2wN-L-UM4h7gQu3nb9dad_j6WYMzwn7zj3n_c4vpZucNHcHdU-ECFcLogBz2OF5ndZBS__";
         
-        // ENLACE 2: Para el Dashboard (Hoja "Plan de Siembra Maestro")
-        // ¡¡¡ PEGA AQUÍ EL NUEVO ENLACE QUE COPIASTE !!!
-        const csvUrl_Plan = https://docs.google.com/spreadsheets/d/e/2PACX-1vRUzvNCSD2wN-L-UM4h7gQu3nb9dad_j6WYMzwn7zj3n_c4vpZucNHcHdU-ECFcLogBz2OF5ndZBS__/pub?gid=1327205092&single=true&output=csv; 
-
-        async function loadDashboard() {
-            const clientIdInput = document.getElementById('client-id').value.toUpperCase().trim();
-            const container = document.getElementById('crops-container');
-            
-            // Cambiar pantalla
-            document.getElementById('login-section').style.display = 'none';
-            document.getElementById('dashboard').style.display = 'block';
-            document.getElementById('dash-id').innerText = clientIdInput;
-            document.getElementById('user-display').innerText = clientIdInput;
-
-            try {
-                // Usamos el ENLACE 2 (Plan de Siembra)
-                const response = await fetch(csvUrl_Plan);
-                const data = await response.text();
-                
-                // Detectar separador
-                let separator = data.split('\n')[0].includes(';') ? ';' : ',';
-                const rows = data.split('\n').map(row => row.split(separator));
-
-                container.innerHTML = ''; 
-                let found = false;
-
-                // Recorrer filas buscando al cliente
-                // ASUMIENDO ORDEN: [0]ID_Siembra, [1]Era, [2]Cliente, [3]Cultivo, [4]Fecha, [5]Dias_Total, [6]Estado
-                for (let i = 1; i < rows.length; i++) {
-                    const row = rows[i];
-                    if (row.length < 5) continue; // Saltar filas vacías
-
-                    // Limpieza de datos (quitar comillas y espacios)
-                    const dbClient = row[2] ? row[2].replace(/['"]+/g, '').trim() : "";
-                    
-                    if (dbClient === clientIdInput) {
-                        found = true;
-                        const cultivo = row[3].replace(/['"]+/g, '');
-                        
-                        // Parsear Fecha (Formato esperado YYYY-MM-DD o similar)
-                        const fechaRaw = row[4].replace(/['"]+/g, '');
-                        const fechaSiembra = new Date(fechaRaw);
-                        
-                        // Parsear Días Totales
-                        const diasTotal = parseInt(row[5].replace(/['"]+/g, ''));
-                        const estado = row[6] ? row[6].replace(/['"]+/g, '') : "En proceso";
-                        
-                        // Si la fecha o los días no son válidos, mostrar error controlado
-                        if (isNaN(fechaSiembra) || isNaN(diasTotal)) {
-                            console.error("Error de datos en fila:", row);
-                            continue;
-                        }
-
-                        // CÁLCULO DE PROGRESO
-                        const hoy = new Date();
-                        // Diferencia en milisegundos
-                        const diffTime = hoy - fechaSiembra; 
-                        // Convertir a días (redondear hacia arriba)
-                        const diasTranscurridos = Math.ceil(diffTime / (1000 * 60 * 60 * 24)); 
-                        
-                        let porcentaje = 0;
-                        if (diasTranscurridos > 0) {
-                            porcentaje = (diasTranscurridos / diasTotal) * 100;
-                        }
-                        if (porcentaje > 100) porcentaje = 100;
-                        if (porcentaje < 0) porcentaje = 0; // Por si fecha futura
-                        
-                        // Crear Tarjeta HTML
-                        const card = `
-                            <div class="card">
-                                <span class="status-badge">${estado}</span>
-                                <h3>🌱 ${cultivo}</h3>
-                                <p><small>Sembrado: ${fechaRaw} | Día ${diasTranscurridos} de ${diasTotal}</small></p>
-                                <div class="progress-container">
-                                    <div class="progress-bar" style="width: ${porcentaje}%"></div>
-                                </div>
-                                <p style="text-align:right; font-size:0.8em; margin-top:5px">
-                                    ${porcentaje.toFixed(0)}% Completado
-                                </p>
-                            </div>
-                        `;
-                        container.innerHTML += card;
-                    }
-                }
-
-                if (!found) {
-                    container.innerHTML = `<p>No encontramos cultivos activos para <strong>${clientIdInput}</strong>.<br>Verifica que en la Hoja 'Plan de Siembra Maestro' el cliente C-001 tenga cultivos asignados.</p>`;
-                }
-
-            } catch (error) {
-                console.error(error);
-                container.innerHTML = `<p style="color:red">Error de conexión. Verifica que el enlace CSV sea correcto.</p>`;
-            }
-        }
-    </script>
-</body>
-</html>
+        // Enlace 2 (TU NUEVO ENLACE del Plan de Siembra Maestro)
+        const csvUrl_Plan = "https
