@@ -3,145 +3,248 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Huerta Don Tarcisio | App</title>
+    <title>Huerta Don Tarcisio | App Visual</title>
     <style>
-        :root { --primary: #2d6a4f; --accent: #e07a5f; --bg: #f7f9f8; }
+        :root { --primary: #2d6a4f; --accent: #e07a5f; --bg: #f0f4f8; }
         body { font-family: 'Helvetica Neue', sans-serif; margin: 0; background: var(--bg); color: #1b4332; }
         
         /* Header */
-        header { background: white; padding: 15px 5%; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 2px 5px rgba(0,0,0,0.05); }
-        .logo { font-weight: bold; color: var(--primary); font-size: 1.2rem; }
+        header { background: white; padding: 15px 5%; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 2px 10px rgba(0,0,0,0.05); position: sticky; top:0; z-index: 100;}
+        .logo { font-weight: 900; color: var(--primary); font-size: 1.3rem; letter-spacing: -1px;}
         
-        /* Login Section */
-        #login-section { text-align: center; padding: 80px 20px; }
-        input { padding: 12px; border: 1px solid #ccc; border-radius: 5px; width: 200px; font-size: 16px; text-align: center; text-transform: uppercase;}
-        button { padding: 12px 25px; background: var(--primary); color: white; border: none; border-radius: 5px; cursor: pointer; font-weight: bold; font-size: 16px; transition: 0.3s;}
-        button:hover { background: #1b4332; }
+        /* Login */
+        #login-section { text-align: center; padding: 100px 20px; min-height: 60vh; display: flex; flex-direction: column; justify-content: center; align-items: center;}
+        h1 { font-size: 2.5rem; margin-bottom: 10px; color: var(--primary); }
+        input { padding: 15px; border: 2px solid #dde5ed; border-radius: 12px; width: 220px; font-size: 18px; text-align: center; text-transform: uppercase; font-weight: bold; letter-spacing: 2px; transition: 0.3s; outline: none;}
+        input:focus { border-color: var(--primary); box-shadow: 0 0 0 3px rgba(45, 106, 79, 0.2); }
+        button { padding: 15px 30px; background: var(--primary); color: white; border: none; border-radius: 12px; cursor: pointer; font-weight: bold; font-size: 16px; transition: 0.3s; margin-top: 20px; box-shadow: 0 4px 6px rgba(45, 106, 79, 0.2);}
+        button:hover { background: #1b4332; transform: translateY(-2px); }
 
-        /* Dashboard Section */
-        #dashboard { display: none; max-width: 800px; margin: 0 auto; padding: 20px; }
+        /* Dashboard */
+        #dashboard { display: none; max-width: 900px; margin: 30px auto; padding: 20px; }
+        .welcome-banner { background: white; padding: 30px; border-radius: 16px; margin-bottom: 30px; box-shadow: 0 2px 10px rgba(0,0,0,0.03); }
+        .welcome-banner h2 { margin: 0; font-size: 2rem; color: var(--primary); }
+
+        /* Grid de Tarjetas */
+        #crops-container { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 25px; }
         
-        /* Tarjetas de Cultivo */
-        .card { background: white; padding: 25px; border-radius: 12px; margin-bottom: 20px; box-shadow: 0 4px 10px rgba(0,0,0,0.05); transition: transform 0.2s; }
-        .card:hover { transform: translateY(-2px); }
+        /* NUEVA TARJETA VISUAL */
+        .crop-card {
+            background: white;
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.05);
+            transition: all 0.3s ease;
+            position: relative;
+        }
+        .crop-card:hover { transform: translateY(-5px); box-shadow: 0 15px 30px rgba(0,0,0,0.08); }
         
-        .card-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
-        .card h3 { margin: 0; font-size: 1.4rem; color: var(--primary); }
-        .status-badge { font-size: 0.8rem; padding: 4px 10px; border-radius: 20px; background: #d8f3dc; color: var(--primary); font-weight: bold; }
+        /* Contenedor de la Imagen */
+        .image-container {
+            height: 200px;
+            width: 100%;
+            background: #e9ecef;
+            position: relative;
+            overflow: hidden;
+        }
+        .crop-image {
+            width: 100%;
+            height: 100%;
+            object-fit: cover; /* Asegura que la foto llene el espacio sin deformarse */
+            transition: transform 0.5s ease;
+        }
+        .crop-card:hover .crop-image { transform: scale(1.05); }
+
+        /* Overlay del Porcentaje sobre la imagen */
+        .percentage-overlay {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            background: linear-gradient(to top, rgba(0,0,0,0.7), transparent);
+            color: white;
+            padding: 20px 15px 10px;
+            box-sizing: border-box;
+        }
+        .percentage-number { font-size: 1.8rem; font-weight: 900; }
+        .percentage-label { font-size: 0.9rem; opacity: 0.9; }
+
+        /* info del cultivo */
+        .crop-info { padding: 20px; }
+        .crop-title { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
+        .crop-title h3 { margin: 0; font-size: 1.3rem; color: #1b4332; }
+        .status-badge { font-size: 0.75rem; padding: 5px 12px; border-radius: 20px; background: #e8f5e9; color: var(--primary); font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; }
+        .crop-dates { font-size: 0.9rem; color: #6c757d; display: flex; gap: 15px; }
+        .crop-dates strong { color: var(--primary); }
         
-        /* Barras de Progreso */
-        .progress-container { background: #e9ecef; border-radius: 10px; height: 25px; width: 100%; margin-top: 15px; overflow: hidden; position: relative; }
-        .progress-bar { height: 100%; background: linear-gradient(90deg, #74c69d, #2d6a4f); width: 0%; transition: width 1.5s ease-out; border-radius: 10px; }
-        .progress-text { position: absolute; width: 100%; text-align: center; line-height: 25px; font-size: 12px; font-weight: bold; color: #fff; text-shadow: 0 1px 2px rgba(0,0,0,0.2); top: 0; left: 0;}
-        
-        .meta-info { font-size: 0.9rem; color: #666; margin-top: 5px; }
+        /* Barra de tarea */
+        .task-bar { background: #f8f9fa; padding: 12px 20px; font-size: 0.85rem; color: #555; border-top: 1px solid #eee; display: flex; align-items: center; }
+        .task-icon { margin-right: 8px; font-size: 1.1rem; }
     </style>
 </head>
 <body>
 
     <header>
         <div class="logo">🌱 Don Tarcisio</div>
-        <div id="user-display">Invitado</div>
+        <div id="user-display" style="font-weight:bold; color:var(--primary)">Invitado</div>
     </header>
 
     <div id="login-section">
-        <h1>Ingresa a tu Huerta</h1>
-        <p>Digita tu código de socio para ver el avance real.</p>
+        <h1>Tu Huerta en Tiempo Real</h1>
+        <p>Ingresa tu código de socio para ver el estado visual.</p>
         <input type="text" id="client-id" placeholder="C-001" value="C-001">
-        <br><br>
-        <button onclick="loadDashboard()">VER MI PROGRESO</button>
+        <button onclick="loadDashboard()">VER MI HUERTA</button>
     </div>
 
     <div id="dashboard">
-        <h2>👋 Hola, Socio <span id="dash-id">...</span></h2>
-        <p>Así van tus cultivos al día de hoy (<span id="fecha-hoy"></span>):</p>
-        <div id="crops-container">Cargando...</div>
-        
-        <button onclick="location.reload()" style="margin-top:30px; background:#6c757d; font-size:14px;">Cerrar Sesión</button>
+        <div class="welcome-banner">
+            <h2>👋 Hola, Socio <span id="dash-id">...</span></h2>
+            <p>Reporte visual al día de hoy (<span id="fecha-hoy"></span>):</p>
+        </div>
+        <div id="crops-container">
+            </div>
+        <div style="text-align: center; margin-top: 40px;">
+             <button onclick="location.reload()" style="background:white; color:#666; border:2px solid #eee; box-shadow:none;">Cerrar Sesión</button>
+        </div>
     </div>
 
     <script>
-        // Enlace DIRECTO al Plan de Siembra (CSV)
-        const csvUrl = "https://docs.google.com/spreadsheets/d/e/2PACX-1vRUzvNCSD2wN-L-UM4h7gQu3nb9dad_j6WYMzwn7zj3n_c4vpZucNHcHdU-ECFcLogBz2OF5ndZBS__/pub?gid=1327205092&single=true&output=csv"; 
+        const csvUrl = "https://docs.google.com/spreadsheets/d/e/2PACX-1vRUzvNCSD2wN-L-UM4h7gQu3nb9dad_j6WYMzwn7zj3n_c4vpZucNHcHdU-ECFcLogBz2OF5ndZBS__/pub?gid=1327205092&single=true&output=csv";
+
+        // ============================================
+        // BANCO DE IMÁGENES (La inteligencia visual)
+        // ============================================
+        // Definimos 4 imágenes para cada tipo de cultivo principal.
+        // Usamos fotos genéricas de alta calidad de Unsplash como ejemplo.
+        
+        const imageBank = {
+            'tomate cherry': {
+                1: 'https://images.unsplash.com/photo-1592840062661-a5a7f78e2056?w=500&q=80', // Plántula
+                2: 'https://images.unsplash.com/photo-1591857177580-dc82b9ac4e10?w=500&q=80', // Planta Joven
+                3: 'https://images.unsplash.com/photo-1533038590840-1cde6e668a91?w=500&q=80', // Floración/Fruto Verde
+                4: 'https://images.unsplash.com/photo-1524593166156-312f362cada0?w=500&q=80'  // Cosecha Roja
+            },
+            'lechuga romana': {
+                1: 'https://images.unsplash.com/photo-1615485290382-441e4d049cb5?w=500&q=80', // Brote
+                2: 'https://images.unsplash.com/photo-1622206151226-18ca0c960a9e?w=500&q=80', // Crecimiento
+                3: 'https://images.unsplash.com/photo-1556801712-76c8eb07da76?w=500&q=80', // Casi lista
+                4: 'https://images.unsplash.com/photo-1506459243355-2449c3e44317?w=500&q=80'  // Lista para comer
+            },
+            'espinaca': {
+                1: 'https://images.unsplash.com/photo-1592840062661-a5a7f78e2056?w=500&q=80', // Plántula genérica
+                2: 'https://images.unsplash.com/photo-1573495627361-d9b87960b12d?w=500&q=80', // Hojas jóvenes
+                3: 'https://images.unsplash.com/photo-1576045057995-568f588f82fb?w=500&q=80', // Planta madura
+                4: 'https://plus.unsplash.com/premium_photo-1664527307764-3005f55b8e36?w=500&q=80'  // Cosecha
+            },
+             'brócoli': {
+                1: 'https://images.unsplash.com/photo-1592840062661-a5a7f78e2056?w=500&q=80',
+                2: 'https://images.unsplash.com/photo-1603048584292-b2d74085254e?w=500&q=80',
+                3: 'https://images.unsplash.com/photo-1584270354949-c26b0d5b4a0c?w=500&q=80',
+                4: 'https://images.unsplash.com/photo-1459411621453-7b03977f4bfc?w=500&q=80'
+            },
+            // Imagen por defecto si no encontramos el cultivo
+            'default': 'https://images.unsplash.com/photo-1585320806297-9794b3e4eeae?w=500&q=80'
+        };
+
 
         async function loadDashboard() {
             const btn = document.querySelector('button');
-            btn.innerText = "Conectando...";
+            btn.innerText = "Analizando cultivos...";
             
             const clientIdInput = document.getElementById('client-id').value.toUpperCase().trim();
             const container = document.getElementById('crops-container');
-            
-            // Fecha bonita
             const hoy = new Date();
-            document.getElementById('fecha-hoy').innerText = hoy.toLocaleDateString('es-CO');
+            document.getElementById('fecha-hoy').innerText = hoy.toLocaleDateString('es-CO', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
 
             try {
                 const response = await fetch(csvUrl);
                 const data = await response.text();
                 
-                // Switch de Pantalla
                 document.getElementById('login-section').style.display = 'none';
                 document.getElementById('dashboard').style.display = 'block';
                 document.getElementById('dash-id').innerText = clientIdInput;
                 document.getElementById('user-display').innerText = clientIdInput;
 
-                // Detectar separador
                 let separator = data.indexOf(';') > -1 ? ';' : ',';
                 const rows = data.split('\n');
-
                 container.innerHTML = ''; 
                 let found = false;
 
-                // Recorrer filas
-                // ASUMIENDO COLUMNAS: [0]ID, [1]Era, [2]Cliente, [3]Cultivo, [4]Fecha, [5]Dias_Total, [6]Estado, [7]Tarea
                 for (let i = 1; i < rows.length; i++) {
                     const row = rows[i].split(separator);
                     if (row.length < 5) continue;
 
-                    // Limpiar Cliente
                     const dbClient = row[2] ? row[2].replace(/['"\r]/g, '').trim() : "";
                     
                     if (dbClient === clientIdInput) {
                         found = true;
                         
-                        // Datos
-                        const cultivo = row[3] ? row[3].replace(/['"]/g, '') : "Cultivo";
+                        // Datos Crudos
+                        const cultivoRaw = row[3] ? row[3].replace(/['"]/g, '') : "Cultivo";
                         const fechaStr = row[4] ? row[4].replace(/['"]/g, '') : "";
                         const diasTotal = parseInt(row[5] ? row[5].replace(/['"]/g, '') : "0");
                         const estado = row[6] ? row[6].replace(/['"]/g, '') : "En Proceso";
-                        const tarea = row[7] ? row[7].replace(/['"\r]/g, '') : "";
+                        const tarea = row[7] ? row[7].replace(/['"\r]/g, '') : "Monitoreo y cuidados generales";
 
-                        // CÁLCULO MATEMÁTICO DEL PORCENTAJE
+                        // Cálculos Matemáticos
                         const fechaSiembra = new Date(fechaStr);
-                        const diffTime = Math.abs(hoy - fechaSiembra);
-                        const diasTranscurridos = Math.ceil(diffTime / (1000 * 60 * 60 * 24)); 
+                        const diffTime = hoy - fechaSiembra;
+                        const diasTranscurridos = Math.floor(diffTime / (1000 * 60 * 60 * 24)); 
                         
                         let porcentaje = 0;
                         if (diasTotal > 0 && !isNaN(diasTotal)) {
                             porcentaje = (diasTranscurridos / diasTotal) * 100;
                         }
-                        
-                        // Limites visuales (0% a 100%)
-                        let visualPercent = porcentaje;
-                        if (visualPercent > 100) visualPercent = 100;
-                        if (visualPercent < 0) visualPercent = 0;
+                        let visualPercent = Math.min(Math.max(porcentaje, 0), 100);
 
-                        // HTML de la Tarjeta
+                        // =========================================
+                        // LÓGICA DE SELECCIÓN DE IMAGEN (NUEVO)
+                        // =========================================
+                        let stage = 1;
+                        if (visualPercent > 30) stage = 2;
+                        if (visualPercent > 60) stage = 3;
+                        if (visualPercent > 90) stage = 4;
+
+                        // Normalizar nombre para buscar en el banco (minusculas, sin tildes)
+                        let cultivoKey = cultivoRaw.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+                        
+                        // Buscar la imagen, si no existe el cultivo, usar default
+                        let imageUrl = imageBank['default'];
+                        if (imageBank[cultivoKey] && imageBank[cultivoKey][stage]) {
+                            imageUrl = imageBank[cultivoKey][stage];
+                        } else {
+                            // Intento de búsqueda parcial (ej: "Lechuga" si no encuentra "Lechuga Romana")
+                            const partialKey = Object.keys(imageBank).find(key => cultivoKey.includes(key));
+                            if (partialKey) {
+                                imageUrl = imageBank[partialKey][stage];
+                            }
+                        }
+
+
+                        // Renderizar Tarjeta Visual
                         const card = `
-                            <div class="card">
-                                <div class="card-header">
-                                    <h3>🌱 ${cultivo}</h3>
-                                    <span class="status-badge">${estado}</span>
+                            <div class="crop-card">
+                                <div class="image-container">
+                                    <img src="${imageUrl}" alt="${cultivoRaw}" class="crop-image">
+                                    <div class="percentage-overlay">
+                                        <div class="percentage-number">${visualPercent.toFixed(0)}%</div>
+                                        <div class="percentage-label">Ciclo Completado</div>
+                                    </div>
                                 </div>
-                                <div class="meta-info">
-                                    📅 Sembrado el: <strong>${fechaStr}</strong> | ⏱️ Ciclo de ${diasTotal} días
+                                
+                                <div class="crop-info">
+                                    <div class="crop-title">
+                                        <h3>${cultivoRaw}</h3>
+                                        <span class="status-badge">${estado}</span>
+                                    </div>
+                                    <div class="crop-dates">
+                                        <div>🌱 Inicio: <strong>${new Date(fechaStr).toLocaleDateString('es-CO', {day:'2-digit', month:'short'})}</strong></div>
+                                        <div>⏱️ Día: <strong>${diasTranscurridos}/${diasTotal}</strong></div>
+                                    </div>
                                 </div>
-                                <div class="progress-container">
-                                    <div class="progress-bar" style="width: ${visualPercent}%"></div>
-                                    <div class="progress-text">${visualPercent.toFixed(1)}% Completado</div>
-                                </div>
-                                <div style="margin-top:10px; font-size:0.85rem; color:#444;">
-                                    📝 <strong>Actividad actual en huerta:</strong> ${tarea || "Monitoreo y Riego"}
+                                
+                                <div class="task-bar">
+                                    <span class="task-icon">📝</span> Actividad hoy en huerta: ${tarea}
                                 </div>
                             </div>
                         `;
@@ -150,17 +253,12 @@
                 }
 
                 if (!found) {
-                    container.innerHTML = `
-                        <div style="text-align:center; padding:20px;">
-                            <h3>🔍 No encontramos cultivos para ${clientIdInput}</h3>
-                            <p>Verifica que el código esté bien escrito o que ya tengas siembras registradas en el sistema.</p>
-                            <button onclick="location.reload()" style="background:#999">Intentar de nuevo</button>
-                        </div>`;
+                    container.innerHTML = `<p style="text-align:center; padding:30px; color:#666;">No encontramos cultivos para el socio <strong>${clientIdInput}</strong>.</p>`;
                 }
 
             } catch (error) {
                 console.error(error);
-                alert("Hubo un error cargando los datos. Revisa la consola.");
+                alert("Error cargando los datos visuales.");
             }
         }
     </script>
