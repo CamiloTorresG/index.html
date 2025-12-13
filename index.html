@@ -8,7 +8,7 @@
         :root { --primary: #2d6a4f; --accent: #e07a5f; --bg: #f7f9f8; }
         body { font-family: sans-serif; margin: 0; background: var(--bg); color: #1b4332; }
         
-        /* Header Simple */
+        /* Header */
         header { background: white; padding: 15px 5%; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 2px 5px rgba(0,0,0,0.05); }
         .logo { font-weight: bold; color: var(--primary); font-size: 1.2rem; }
         
@@ -17,7 +17,7 @@
         input { padding: 10px; border: 1px solid #ccc; border-radius: 5px; width: 200px; }
         button { padding: 10px 20px; background: var(--primary); color: white; border: none; border-radius: 5px; cursor: pointer; font-weight: bold; }
         
-        /* Dashboard Section (Oculto al inicio) */
+        /* Dashboard Section */
         #dashboard { display: none; max-width: 800px; margin: 0 auto; padding: 20px; }
         .card { background: white; padding: 20px; border-radius: 10px; margin-bottom: 15px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); }
         
@@ -26,7 +26,6 @@
         .progress-bar { height: 100%; background: linear-gradient(90deg, #52b788, #2d6a4f); width: 0%; transition: width 1s ease-in-out; }
         
         .status-badge { float: right; font-size: 0.8rem; padding: 3px 8px; border-radius: 10px; background: #d8f3dc; color: var(--primary); }
-        .fruit-icon { font-size: 1.5rem; margin-right: 10px; vertical-align: middle; }
     </style>
 </head>
 <body>
@@ -46,68 +45,91 @@
     <div id="dashboard">
         <h2>👋 Hola, Socio <span id="dash-id"></span></h2>
         <p>Este es el estado real de tus cultivos hoy:</p>
-        <div id="crops-container">
-            Cargando datos de la huerta...
-        </div>
+        <div id="crops-container">Cargando datos...</div>
+        <button onclick="location.reload()" style="margin-top:20px; background:#999">Salir</button>
     </div>
 
     <script>
-        // TU ENLACE CSV (El mismo de antes)
+        // ==========================================
+        // CONFIGURACIÓN DE ENLACES (IMPORTANTE)
+        // ==========================================
+        
+        // ENLACE 1: Para el inventario (Hoja "Configuración de Eras") - Déjalo como estaba
         const sheetID = "2PACX-1vRUzvNCSD2wN-L-UM4h7gQu3nb9dad_j6WYMzwn7zj3n_c4vpZucNHcHdU-ECFcLogBz2OF5ndZBS__";
-        const csvUrl = `https://docs.google.com/spreadsheets/d/e/${sheetID}/pub?output=csv`;
+        
+        // ENLACE 2: Para el Dashboard (Hoja "Plan de Siembra Maestro")
+        // ¡¡¡ PEGA AQUÍ EL NUEVO ENLACE QUE COPIASTE !!!
+        const csvUrl_Plan = https://docs.google.com/spreadsheets/d/e/2PACX-1vRUzvNCSD2wN-L-UM4h7gQu3nb9dad_j6WYMzwn7zj3n_c4vpZucNHcHdU-ECFcLogBz2OF5ndZBS__/pub?gid=1327205092&single=true&output=csv; 
 
         async function loadDashboard() {
             const clientIdInput = document.getElementById('client-id').value.toUpperCase().trim();
             const container = document.getElementById('crops-container');
             
-            // UI Switch
+            // Cambiar pantalla
             document.getElementById('login-section').style.display = 'none';
             document.getElementById('dashboard').style.display = 'block';
             document.getElementById('dash-id').innerText = clientIdInput;
             document.getElementById('user-display').innerText = clientIdInput;
 
             try {
-                const response = await fetch(csvUrl);
+                // Usamos el ENLACE 2 (Plan de Siembra)
+                const response = await fetch(csvUrl_Plan);
                 const data = await response.text();
                 
-                // Detectar separador (; o ,)
+                // Detectar separador
                 let separator = data.split('\n')[0].includes(';') ? ';' : ',';
                 const rows = data.split('\n').map(row => row.split(separator));
 
-                container.innerHTML = ''; // Limpiar
+                container.innerHTML = ''; 
                 let found = false;
 
-                // Recorrer filas (Saltando encabezados si es necesario, ajusta índices según tu CSV)
-                // ASUMIENDO ORDEN COLUMNAS: 
-                // [0]ID_Siembra, [1]Era, [2]Cliente, [3]Cultivo, [4]Fecha, [5]Dias_Total, [6]Estado
-                
-                // Empezamos búsqueda
+                // Recorrer filas buscando al cliente
+                // ASUMIENDO ORDEN: [0]ID_Siembra, [1]Era, [2]Cliente, [3]Cultivo, [4]Fecha, [5]Dias_Total, [6]Estado
                 for (let i = 1; i < rows.length; i++) {
                     const row = rows[i];
-                    if (row.length < 5) continue;
+                    if (row.length < 5) continue; // Saltar filas vacías
 
-                    const dbClient = row[2].replace(/['"]+/g, '').trim(); // Columna C (Cliente)
+                    // Limpieza de datos (quitar comillas y espacios)
+                    const dbClient = row[2] ? row[2].replace(/['"]+/g, '').trim() : "";
                     
                     if (dbClient === clientIdInput) {
                         found = true;
-                        const cultivo = row[3];
-                        const fechaSiembra = new Date(row[4]);
-                        const diasTotal = parseInt(row[5]);
+                        const cultivo = row[3].replace(/['"]+/g, '');
                         
-                        // CÁLCULO DE PROGRESO EN VIVO
+                        // Parsear Fecha (Formato esperado YYYY-MM-DD o similar)
+                        const fechaRaw = row[4].replace(/['"]+/g, '');
+                        const fechaSiembra = new Date(fechaRaw);
+                        
+                        // Parsear Días Totales
+                        const diasTotal = parseInt(row[5].replace(/['"]+/g, ''));
+                        const estado = row[6] ? row[6].replace(/['"]+/g, '') : "En proceso";
+                        
+                        // Si la fecha o los días no son válidos, mostrar error controlado
+                        if (isNaN(fechaSiembra) || isNaN(diasTotal)) {
+                            console.error("Error de datos en fila:", row);
+                            continue;
+                        }
+
+                        // CÁLCULO DE PROGRESO
                         const hoy = new Date();
-                        const diffTime = Math.abs(hoy - fechaSiembra);
+                        // Diferencia en milisegundos
+                        const diffTime = hoy - fechaSiembra; 
+                        // Convertir a días (redondear hacia arriba)
                         const diasTranscurridos = Math.ceil(diffTime / (1000 * 60 * 60 * 24)); 
                         
-                        let porcentaje = (diasTranscurridos / diasTotal) * 100;
+                        let porcentaje = 0;
+                        if (diasTranscurridos > 0) {
+                            porcentaje = (diasTranscurridos / diasTotal) * 100;
+                        }
                         if (porcentaje > 100) porcentaje = 100;
+                        if (porcentaje < 0) porcentaje = 0; // Por si fecha futura
                         
-                        // Renderizar Tarjeta
+                        // Crear Tarjeta HTML
                         const card = `
                             <div class="card">
-                                <span class="status-badge">${porcentaje >= 100 ? '¡LISTO!' : 'Creciendo'}</span>
+                                <span class="status-badge">${estado}</span>
                                 <h3>🌱 ${cultivo}</h3>
-                                <p><small>Sembrado el: ${row[4]} | Días: ${diasTranscurridos}/${diasTotal}</small></p>
+                                <p><small>Sembrado: ${fechaRaw} | Día ${diasTranscurridos} de ${diasTotal}</small></p>
                                 <div class="progress-container">
                                     <div class="progress-bar" style="width: ${porcentaje}%"></div>
                                 </div>
@@ -121,12 +143,12 @@
                 }
 
                 if (!found) {
-                    container.innerHTML = `<p>No encontramos cultivos activos para el cliente <strong>${clientIdInput}</strong>. <br>Revisa que el ID sea correcto (ej: C-001).</p>`;
+                    container.innerHTML = `<p>No encontramos cultivos activos para <strong>${clientIdInput}</strong>.<br>Verifica que en la Hoja 'Plan de Siembra Maestro' el cliente C-001 tenga cultivos asignados.</p>`;
                 }
 
             } catch (error) {
                 console.error(error);
-                container.innerHTML = "Error conectando con la base de datos.";
+                container.innerHTML = `<p style="color:red">Error de conexión. Verifica que el enlace CSV sea correcto.</p>`;
             }
         }
     </script>
