@@ -3,327 +3,132 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Huerta Don Tarcisio | Tu Farmville Real</title>
+    <title>Huerta Don Tarcisio | App</title>
     <style>
-        :root {
-            --primary: #2d6a4f; /* Verde Tarcisio */
-            --secondary: #d8f3dc; /* Verde Claro */
-            --accent: #e07a5f; /* Naranja Frutos */
-            --text: #1b4332;
-        }
-        body {
-            font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
-            margin: 0;
-            padding: 0;
-            color: var(--text);
-            background-color: #f7f9f8;
-        }
-        /* Header */
-        header {
-            background-color: white;
-            padding: 20px 5%;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-        .logo {
-            font-size: 24px;
-            font-weight: bold;
-            color: var(--primary);
-        }
-        .nav-btn {
-            background-color: var(--primary);
-            color: white;
-            padding: 10px 20px;
-            text-decoration: none;
-            border-radius: 25px;
-            font-weight: bold;
-        }
+        :root { --primary: #2d6a4f; --accent: #e07a5f; --bg: #f7f9f8; }
+        body { font-family: sans-serif; margin: 0; background: var(--bg); color: #1b4332; }
         
-        /* Hero Section */
-        .hero {
-            background-color: var(--primary);
-            color: white;
-            text-align: center;
-            padding: 60px 20px;
-            background-image: linear-gradient(rgba(45, 106, 79, 0.8), rgba(45, 106, 79, 0.9)), url('https://images.unsplash.com/photo-1591857177580-dc82b9ac4e10?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80');
-            background-size: cover;
-            background-position: center;
-        }
-        .hero h1 { font-size: 48px; margin-bottom: 10px; }
-        .hero p { font-size: 20px; margin-bottom: 30px; }
+        /* Header Simple */
+        header { background: white; padding: 15px 5%; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 2px 5px rgba(0,0,0,0.05); }
+        .logo { font-weight: bold; color: var(--primary); font-size: 1.2rem; }
         
-        /* Disponibilidad (Live Data Simulator) */
-        .availability-banner {
-            background-color: var(--accent);
-            color: white;
-            text-align: center;
-            padding: 15px;
-            font-weight: bold;
-            font-size: 18px;
-            margin-top: -20px;
-            margin-bottom: 40px;
-            width: 90%;
-            margin-left: auto;
-            margin-right: auto;
-            border-radius: 8px;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
-            transition: all 0.5s ease;
-        }
-
-        /* Container */
-        .container {
-            max-width: 1000px;
-            margin: 0 auto;
-            padding: 20px;
-        }
-
-        /* Value Props */
-        .value-props {
-            display: flex;
-            justify-content: space-between;
-            flex-wrap: wrap;
-            margin: 50px 0;
-        }
-        .prop {
-            flex-basis: 30%;
-            text-align: center;
-            background: white;
-            padding: 30px 20px;
-            border-radius: 10px;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.05);
-            margin-bottom: 20px;
-        }
-        .prop h3 { color: var(--primary); }
-
-        /* Product Detail */
-        .product-highlight {
-            background-color: white;
-            border-left: 5px solid var(--primary);
-            padding: 30px;
-            margin: 40px 0;
-            border-radius: 5px;
-        }
-        .kit-details ul {
-            columns: 2;
-            -webkit-columns: 2;
-            -moz-columns: 2;
-        }
-
-        /* Pricing */
-        .pricing {
-            display: flex;
-            justify-content: center;
-            gap: 20px;
-            margin-top: 40px;
-            flex-wrap: wrap;
-        }
-        .card {
-            background: white;
-            padding: 30px;
-            border-radius: 15px;
-            text-align: center;
-            width: 300px;
-            border: 1px solid #eee;
-            transition: transform 0.3s;
-        }
-        .card:hover { transform: translateY(-5px); border-color: var(--primary); }
-        .card.featured {
-            border: 2px solid var(--primary);
-            background-color: #f1f8f4;
-            position: relative;
-        }
-        .badge {
-            position: absolute;
-            top: -15px;
-            left: 50%;
-            transform: translateX(-50%);
-            background-color: var(--accent);
-            color: white;
-            padding: 5px 15px;
-            border-radius: 15px;
-            font-size: 12px;
-            font-weight: bold;
-        }
-        .price { font-size: 36px; font-weight: bold; color: var(--primary); }
-        .period { color: #666; font-size: 14px; }
-        .cta-btn {
-            display: block;
-            background-color: var(--primary);
-            color: white;
-            padding: 15px;
-            margin-top: 20px;
-            text-decoration: none;
-            border-radius: 5px;
-            font-weight: bold;
-            transition: background 0.3s;
-        }
-        .cta-btn:hover { background-color: #1b4332; }
-        .cta-outline {
-            background-color: transparent;
-            border: 2px solid var(--primary);
-            color: var(--primary);
-        }
-        .cta-outline:hover { background-color: var(--primary); color: white; }
-
-        /* Footer */
-        footer {
-            text-align: center;
-            padding: 40px;
-            background-color: #1b4332;
-            color: white;
-            margin-top: 60px;
-        }
+        /* Login Section */
+        #login-section { text-align: center; padding: 50px 20px; }
+        input { padding: 10px; border: 1px solid #ccc; border-radius: 5px; width: 200px; }
+        button { padding: 10px 20px; background: var(--primary); color: white; border: none; border-radius: 5px; cursor: pointer; font-weight: bold; }
+        
+        /* Dashboard Section (Oculto al inicio) */
+        #dashboard { display: none; max-width: 800px; margin: 0 auto; padding: 20px; }
+        .card { background: white; padding: 20px; border-radius: 10px; margin-bottom: 15px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); }
+        
+        /* Barras de Progreso */
+        .progress-container { background: #eee; border-radius: 10px; height: 20px; width: 100%; margin-top: 10px; overflow: hidden; }
+        .progress-bar { height: 100%; background: linear-gradient(90deg, #52b788, #2d6a4f); width: 0%; transition: width 1s ease-in-out; }
+        
+        .status-badge { float: right; font-size: 0.8rem; padding: 3px 8px; border-radius: 10px; background: #d8f3dc; color: var(--primary); }
+        .fruit-icon { font-size: 1.5rem; margin-right: 10px; vertical-align: middle; }
     </style>
 </head>
 <body>
 
     <header>
         <div class="logo">🌱 Don Tarcisio</div>
-        <a href="#" class="nav-btn">Mi Huerta (Login)</a>
+        <div id="user-display">Invitado</div>
     </header>
 
-    <div class="hero">
-        <h1>Tu Huerta Personal en la Sabana</h1>
-        <p>Configura tu kit, monitorea el crecimiento y recibe tu cosecha orgánica en casa.</p>
+    <div id="login-section">
+        <h1>Ingresa a tu Huerta</h1>
+        <p>Introduce tu ID de Cliente (ej: C-001)</p>
+        <input type="text" id="client-id" placeholder="C-001" value="C-001">
+        <button onclick="loadDashboard()">Ver Mi Cosecha</button>
     </div>
 
-    <div id="availability-banner" class="availability-banner">
-        ⏳ Conectando con la huerta...
+    <div id="dashboard">
+        <h2>👋 Hola, Socio <span id="dash-id"></span></h2>
+        <p>Este es el estado real de tus cultivos hoy:</p>
+        <div id="crops-container">
+            Cargando datos de la huerta...
+        </div>
     </div>
-
-    <div class="container">
-        
-        <div class="value-props">
-            <div class="prop">
-                <h3>1. Configura</h3>
-                <p>Elige tu kit "Rentabilidad Plus". Incluye nuestra base de hojas verdes y el módulo premium de tomates y pimentones.</p>
-            </div>
-            <div class="prop">
-                <h3>2. Monitorea</h3>
-                <p>Tu parcela de 15.6m² es real. Nosotros la sembramos, cuidamos y tú ves el progreso desde tu celular.</p>
-            </div>
-            <div class="prop">
-                <h3>3. Recibe</h3>
-                <p>Cosechas semanales frescas en la puerta de tu casa. Valor total de la cosecha semestral: <strong>$639.100</strong>.</p>
-            </div>
-        </div>
-
-        <div class="product-highlight">
-            <h2>📦 ¿Qué incluye el Kit "Rentabilidad Plus"?</h2>
-            <p>Diseñado para maximizar el valor de tu inversión. Recibirás semanalmente:</p>
-            <div class="kit-details">
-                <ul>
-                    <li>🥬 <strong>Lechugas Salanova & Romana</strong> (Base)</li>
-                    <li>🥗 <strong>Espinaca & Acelga de Colores</strong> (Base)</li>
-                    <li>🧅 <strong>Cebolla Larga & Aromáticas</strong> (Base)</li>
-                    <li>🍅 <strong>Tomates Cherry Premium</strong> (Módulo Frutos)</li>
-                    <li>🌶️ <strong>Pimentones & Ajíes</strong> (Módulo Frutos)</li>
-                </ul>
-            </div>
-            <p><small><em>* Además, acceso a nuestras 3 eras de Buffer para pedir Brócoli, Kale o Raíces extra.</em></small></p>
-        </div>
-
-        <h2 style="text-align: center;">Elige tu Plan de Suscripción</h2>
-        <div class="pricing">
-            <div class="card">
-                <h3>Pago Mensual</h3>
-                <div class="price">$150.000</div>
-                <div class="period">COP / Mes (x 6 meses)</div>
-                <p>Total Semestre: $900.000</p>
-                <hr style="border: 0; border-top: 1px solid #eee; margin: 20px 0;">
-                <p>Flexibilidad total.</p>
-                <a href="#" class="cta-btn cta-outline">Elegir Mensual</a>
-            </div>
-
-            <div class="card featured">
-                <div class="badge">MEJOR VALOR - AHORRAS 30%</div>
-                <h3>Pago Anticipado</h3>
-                <div class="price">$630.000</div>
-                <div class="period">COP / Un solo pago</div>
-                <p>Cubre todo el semestre</p>
-                <hr style="border: 0; border-top: 1px solid #eee; margin: 20px 0;">
-                <p><strong>Precio casi igual al valor de la cosecha ($639k)</strong></p>
-                <a href="#" class="cta-btn">Elegir Anticipado</a>
-            </div>
-        </div>
-
-    </div>
-
-    <footer>
-        <p>© 2025 Don Tarcisio S.A.S. - Transformando el campo con tecnología.</p>
-        <p><small>Operación en Chía y Cajicá, Cundinamarca.</small></p>
-    </footer>
 
     <script>
-        // Tu ID de publicación (extraído de tu enlace)
+        // TU ENLACE CSV (El mismo de antes)
         const sheetID = "2PACX-1vRUzvNCSD2wN-L-UM4h7gQu3nb9dad_j6WYMzwn7zj3n_c4vpZucNHcHdU-ECFcLogBz2OF5ndZBS__";
         const csvUrl = `https://docs.google.com/spreadsheets/d/e/${sheetID}/pub?output=csv`;
 
-        async function updateAvailability() {
+        async function loadDashboard() {
+            const clientIdInput = document.getElementById('client-id').value.toUpperCase().trim();
+            const container = document.getElementById('crops-container');
+            
+            // UI Switch
+            document.getElementById('login-section').style.display = 'none';
+            document.getElementById('dashboard').style.display = 'block';
+            document.getElementById('dash-id').innerText = clientIdInput;
+            document.getElementById('user-display').innerText = clientIdInput;
+
             try {
-                console.log("Intentando conectar con:", csvUrl); // Para depuración
                 const response = await fetch(csvUrl);
                 const data = await response.text();
                 
-                // 1. DETECCIÓN INTELIGENTE DE SEPARADOR (Coma o Punto y Coma)
-                // Si la primera línea tiene ';', asumimos que es el separador.
-                let separator = ',';
-                const firstLine = data.split('\n')[0];
-                if (firstLine && firstLine.includes(';')) {
-                    separator = ';';
-                }
-
-                console.log("Separador detectado:", separator);
-
-                // 2. PROCESAMIENTO
+                // Detectar separador (; o ,)
+                let separator = data.split('\n')[0].includes(';') ? ';' : ',';
                 const rows = data.split('\n').map(row => row.split(separator));
+
+                container.innerHTML = ''; // Limpiar
+                let found = false;
+
+                // Recorrer filas (Saltando encabezados si es necesario, ajusta índices según tu CSV)
+                // ASUMIENDO ORDEN COLUMNAS: 
+                // [0]ID_Siembra, [1]Era, [2]Cliente, [3]Cultivo, [4]Fecha, [5]Dias_Total, [6]Estado
                 
-                let occupiedCount = 0;
-                const totalEras = 25; 
-                
-                // Empezamos en i=1 para saltar el encabezado
+                // Empezamos búsqueda
                 for (let i = 1; i < rows.length; i++) {
                     const row = rows[i];
-                    // Aseguramos que la fila tenga datos
-                    if (row.length > 1) {
-                        // Limpiamos comillas que Google a veces añade (ej: "1" -> 1)
-                        const rawId = row[0].replace(/['"]+/g, ''); 
-                        const idEra = parseInt(rawId); 
-                        
-                        // Limpiamos el estado (quitamos comillas y espacios)
-                        let estado = row[1] ? row[1].replace(/['"]+/g, '').trim().toLowerCase() : "";
+                    if (row.length < 5) continue;
 
-                        // Lógica de conteo (busca "asignada" en minúsculas para ser más flexible)
-                        if (!isNaN(idEra) && idEra <= 25 && estado === "asignada") {
-                            occupiedCount++;
-                        }
+                    const dbClient = row[2].replace(/['"]+/g, '').trim(); // Columna C (Cliente)
+                    
+                    if (dbClient === clientIdInput) {
+                        found = true;
+                        const cultivo = row[3];
+                        const fechaSiembra = new Date(row[4]);
+                        const diasTotal = parseInt(row[5]);
+                        
+                        // CÁLCULO DE PROGRESO EN VIVO
+                        const hoy = new Date();
+                        const diffTime = Math.abs(hoy - fechaSiembra);
+                        const diasTranscurridos = Math.ceil(diffTime / (1000 * 60 * 60 * 24)); 
+                        
+                        let porcentaje = (diasTranscurridos / diasTotal) * 100;
+                        if (porcentaje > 100) porcentaje = 100;
+                        
+                        // Renderizar Tarjeta
+                        const card = `
+                            <div class="card">
+                                <span class="status-badge">${porcentaje >= 100 ? '¡LISTO!' : 'Creciendo'}</span>
+                                <h3>🌱 ${cultivo}</h3>
+                                <p><small>Sembrado el: ${row[4]} | Días: ${diasTranscurridos}/${diasTotal}</small></p>
+                                <div class="progress-container">
+                                    <div class="progress-bar" style="width: ${porcentaje}%"></div>
+                                </div>
+                                <p style="text-align:right; font-size:0.8em; margin-top:5px">
+                                    ${porcentaje.toFixed(0)}% Completado
+                                </p>
+                            </div>
+                        `;
+                        container.innerHTML += card;
                     }
                 }
 
-                const available = totalEras - occupiedCount;
-                console.log("Eras ocupadas encontradas:", occupiedCount); // Para depuración
-
-                // 3. ACTUALIZAR PANTALLA
-                const banner = document.getElementById('availability-banner');
-                if (available > 0) {
-                    banner.innerHTML = `🔥 ¡DÉMONOS PRISA! SOLO QUEDAN <strong>${available}</strong> CUPOS DISPONIBLES (De ${totalEras})`;
-                    banner.style.backgroundColor = "#e07a5f"; // Color Naranja
-                } else {
-                    banner.innerHTML = `🚫 ¡LO SENTIMOS! HEMOS VENDIDO TODOS LOS CUPOS POR ESTA TEMPORADA.`;
-                    banner.style.backgroundColor = "#e63946"; // Rojo alerta
+                if (!found) {
+                    container.innerHTML = `<p>No encontramos cultivos activos para el cliente <strong>${clientIdInput}</strong>. <br>Revisa que el ID sea correcto (ej: C-001).</p>`;
                 }
 
             } catch (error) {
-                console.error('Error al leer la huerta:', error);
-                document.getElementById('availability-banner').innerText = "⚠️ Estamos actualizando el inventario...";
+                console.error(error);
+                container.innerHTML = "Error conectando con la base de datos.";
             }
         }
-
-        // Ejecutar al cargar
-        updateAvailability();
     </script>
-
 </body>
 </html>
