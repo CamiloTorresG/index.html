@@ -3,59 +3,104 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Huerta Don Tarcisio | App</title>
+    <title>Huerta Don Tarcisio | Diagnóstico</title>
     <style>
-        :root { --primary: #2d6a4f; --accent: #e07a5f; --bg: #f7f9f8; }
-        body { font-family: sans-serif; margin: 0; background: var(--bg); color: #1b4332; }
-        
-        /* Header */
-        header { background: white; padding: 15px 5%; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 2px 5px rgba(0,0,0,0.05); }
-        .logo { font-weight: bold; color: var(--primary); font-size: 1.2rem; }
-        
-        /* Login Section */
-        #login-section { text-align: center; padding: 50px 20px; }
-        input { padding: 10px; border: 1px solid #ccc; border-radius: 5px; width: 200px; }
-        button { padding: 10px 20px; background: var(--primary); color: white; border: none; border-radius: 5px; cursor: pointer; font-weight: bold; }
-        
-        /* Dashboard Section */
-        #dashboard { display: none; max-width: 800px; margin: 0 auto; padding: 20px; }
-        .card { background: white; padding: 20px; border-radius: 10px; margin-bottom: 15px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); }
-        
-        /* Barras de Progreso */
-        .progress-container { background: #eee; border-radius: 10px; height: 20px; width: 100%; margin-top: 10px; overflow: hidden; }
-        .progress-bar { height: 100%; background: linear-gradient(90deg, #52b788, #2d6a4f); width: 0%; transition: width 1s ease-in-out; }
-        
-        .status-badge { float: right; font-size: 0.8rem; padding: 3px 8px; border-radius: 10px; background: #d8f3dc; color: var(--primary); }
+        body { font-family: sans-serif; padding: 20px; background: #f4f4f4; }
+        .box { background: white; padding: 20px; border-radius: 8px; max-width: 500px; margin: 0 auto; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
+        input { padding: 10px; width: 70%; margin-bottom: 10px; }
+        button { padding: 10px 20px; background: #2d6a4f; color: white; border: none; cursor: pointer; font-weight: bold; width: 100%; }
+        #logs { margin-top: 20px; font-family: monospace; background: #eee; padding: 10px; border-radius: 5px; font-size: 12px; color: #333; }
+        .card { border: 1px solid #ddd; padding: 10px; margin-top: 10px; border-radius: 5px; background: #fff; }
     </style>
 </head>
 <body>
 
-    <header>
-        <div class="logo">🌱 Don Tarcisio</div>
-        <div id="user-display">Invitado</div>
-    </header>
-
-    <div id="login-section">
-        <h1>Ingresa a tu Huerta</h1>
-        <p>Introduce tu ID de Cliente (ej: C-001)</p>
-        <input type="text" id="client-id" placeholder="C-001" value="C-001">
-        <button onclick="loadDashboard()">Ver Mi Cosecha</button>
-    </div>
-
-    <div id="dashboard">
-        <h2>👋 Hola, Socio <span id="dash-id"></span></h2>
-        <p>Este es el estado real de tus cultivos hoy:</p>
-        <div id="crops-container">Cargando datos...</div>
-        <button onclick="location.reload()" style="margin-top:20px; background:#999; color:white; border:none; padding:10px 20px; border-radius:5px; cursor:pointer;">Salir</button>
+    <div class="box">
+        <h2>🛠️ Modo Diagnóstico</h2>
+        <p>Ingresa tu ID (ej: C-001)</p>
+        <input type="text" id="client-id" value="C-001">
+        <button onclick="iniciarDiagnostico()">VER MI COSECHA</button>
+        
+        <div id="resultado" style="margin-top:20px;"></div>
+        
+        <h3>Registro de Actividad (Logs):</h3>
+        <div id="logs">Esperando acción...</div>
     </div>
 
     <script>
-        // ==========================================
-        // CONFIGURACIÓN DE ENLACES
-        // ==========================================
-        
-        // Enlace 1 (Inventario General) - No se usa en esta vista, pero lo dejamos por si acaso.
-        const sheetID = "2PACX-1vRUzvNCSD2wN-L-UM4h7gQu3nb9dad_j6WYMzwn7zj3n_c4vpZucNHcHdU-ECFcLogBz2OF5ndZBS__";
-        
-        // Enlace 2 (TU NUEVO ENLACE del Plan de Siembra Maestro)
-        const csvUrl_Plan = "https
+        // TU ENLACE CSV REAL
+        const csvUrl = "https://docs.google.com/spreadsheets/d/e/2PACX-1vRUzvNCSD2wN-L-UM4h7gQu3nb9dad_j6WYMzwn7zj3n_c4vpZucNHcHdU-ECFcLogBz2OF5ndZBS__/pub?gid=1327205092&single=true&output=csv";
+
+        function log(msg) {
+            const logBox = document.getElementById('logs');
+            logBox.innerHTML += "<br>> " + msg;
+            console.log(msg);
+        }
+
+        async function iniciarDiagnostico() {
+            // 1. Verificar si el botón responde
+            alert("¡El botón funciona! Iniciando conexión...");
+            log("Botón presionado. Iniciando...");
+            
+            const clientId = document.getElementById('client-id').value.toUpperCase().trim();
+            const resultadoDiv = document.getElementById('resultado');
+            resultadoDiv.innerHTML = "⏳ Cargando...";
+
+            try {
+                log("Intentando descargar CSV desde Google...");
+                const response = await fetch(csvUrl);
+                
+                if (!response.ok) {
+                    throw new Error("Error de red: " + response.status);
+                }
+
+                const data = await response.text();
+                log("¡Datos descargados! Tamaño: " + data.length + " caracteres.");
+                
+                // Detectar separador
+                const separator = data.indexOf(';') > -1 ? ';' : ',';
+                log("Separador detectado: '" + separator + "'");
+
+                const rows = data.split('\n');
+                log("Filas encontradas: " + rows.length);
+
+                let html = "";
+                let encontrado = false;
+
+                // Buscar C-001
+                for (let i = 1; i < rows.length; i++) {
+                    const row = rows[i].split(separator);
+                    if (row.length < 3) continue;
+
+                    // Limpieza agresiva de datos
+                    const rawClient = row[2] ? row[2].replace(/['"\r]/g, '').trim() : "VACIO";
+                    
+                    if (rawClient === clientId) {
+                        encontrado = true;
+                        const cultivo = row[3] || "Desconocido";
+                        const estado = row[6] || "Desconocido";
+                        
+                        html += `<div class='card'><strong>${cultivo}</strong><br>Estado: ${estado}</div>`;
+                        log("Encontrado cultivo: " + cultivo);
+                    }
+                }
+
+                if (encontrado) {
+                    resultadoDiv.innerHTML = "<h3>✅ Cultivos Encontrados:</h3>" + html;
+                    log("Proceso terminado con éxito.");
+                } else {
+                    resultadoDiv.innerHTML = "❌ No se encontraron datos para " + clientId;
+                    log("No hubo coincidencias en el Excel.");
+                    // Imprimir primeros 3 clientes para ver qué está leyendo
+                    log("Muestra de clientes en Excel: " + rows[1].split(separator)[2] + ", " + rows[2].split(separator)[2]);
+                }
+
+            } catch (error) {
+                alert("Error: " + error.message);
+                log("ERROR CRÍTICO: " + error.message);
+                resultadoDiv.innerHTML = "⚠️ Error técnico. Mira el log abajo.";
+            }
+        }
+    </script>
+</body>
+</html>
