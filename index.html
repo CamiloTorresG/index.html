@@ -3,102 +3,164 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Huerta Don Tarcisio | Diagnóstico</title>
+    <title>Huerta Don Tarcisio | App</title>
     <style>
-        body { font-family: sans-serif; padding: 20px; background: #f4f4f4; }
-        .box { background: white; padding: 20px; border-radius: 8px; max-width: 500px; margin: 0 auto; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
-        input { padding: 10px; width: 70%; margin-bottom: 10px; }
-        button { padding: 10px 20px; background: #2d6a4f; color: white; border: none; cursor: pointer; font-weight: bold; width: 100%; }
-        #logs { margin-top: 20px; font-family: monospace; background: #eee; padding: 10px; border-radius: 5px; font-size: 12px; color: #333; }
-        .card { border: 1px solid #ddd; padding: 10px; margin-top: 10px; border-radius: 5px; background: #fff; }
+        :root { --primary: #2d6a4f; --accent: #e07a5f; --bg: #f7f9f8; }
+        body { font-family: 'Helvetica Neue', sans-serif; margin: 0; background: var(--bg); color: #1b4332; }
+        
+        /* Header */
+        header { background: white; padding: 15px 5%; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 2px 5px rgba(0,0,0,0.05); }
+        .logo { font-weight: bold; color: var(--primary); font-size: 1.2rem; }
+        
+        /* Login Section */
+        #login-section { text-align: center; padding: 80px 20px; }
+        input { padding: 12px; border: 1px solid #ccc; border-radius: 5px; width: 200px; font-size: 16px; text-align: center; text-transform: uppercase;}
+        button { padding: 12px 25px; background: var(--primary); color: white; border: none; border-radius: 5px; cursor: pointer; font-weight: bold; font-size: 16px; transition: 0.3s;}
+        button:hover { background: #1b4332; }
+
+        /* Dashboard Section */
+        #dashboard { display: none; max-width: 800px; margin: 0 auto; padding: 20px; }
+        
+        /* Tarjetas de Cultivo */
+        .card { background: white; padding: 25px; border-radius: 12px; margin-bottom: 20px; box-shadow: 0 4px 10px rgba(0,0,0,0.05); transition: transform 0.2s; }
+        .card:hover { transform: translateY(-2px); }
+        
+        .card-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
+        .card h3 { margin: 0; font-size: 1.4rem; color: var(--primary); }
+        .status-badge { font-size: 0.8rem; padding: 4px 10px; border-radius: 20px; background: #d8f3dc; color: var(--primary); font-weight: bold; }
+        
+        /* Barras de Progreso */
+        .progress-container { background: #e9ecef; border-radius: 10px; height: 25px; width: 100%; margin-top: 15px; overflow: hidden; position: relative; }
+        .progress-bar { height: 100%; background: linear-gradient(90deg, #74c69d, #2d6a4f); width: 0%; transition: width 1.5s ease-out; border-radius: 10px; }
+        .progress-text { position: absolute; width: 100%; text-align: center; line-height: 25px; font-size: 12px; font-weight: bold; color: #fff; text-shadow: 0 1px 2px rgba(0,0,0,0.2); top: 0; left: 0;}
+        
+        .meta-info { font-size: 0.9rem; color: #666; margin-top: 5px; }
     </style>
 </head>
 <body>
 
-    <div class="box">
-        <h2>🛠️ Modo Diagnóstico</h2>
-        <p>Ingresa tu ID (ej: C-001)</p>
-        <input type="text" id="client-id" value="C-001">
-        <button onclick="iniciarDiagnostico()">VER MI COSECHA</button>
+    <header>
+        <div class="logo">🌱 Don Tarcisio</div>
+        <div id="user-display">Invitado</div>
+    </header>
+
+    <div id="login-section">
+        <h1>Ingresa a tu Huerta</h1>
+        <p>Digita tu código de socio para ver el avance real.</p>
+        <input type="text" id="client-id" placeholder="C-001" value="C-001">
+        <br><br>
+        <button onclick="loadDashboard()">VER MI PROGRESO</button>
+    </div>
+
+    <div id="dashboard">
+        <h2>👋 Hola, Socio <span id="dash-id">...</span></h2>
+        <p>Así van tus cultivos al día de hoy (<span id="fecha-hoy"></span>):</p>
+        <div id="crops-container">Cargando...</div>
         
-        <div id="resultado" style="margin-top:20px;"></div>
-        
-        <h3>Registro de Actividad (Logs):</h3>
-        <div id="logs">Esperando acción...</div>
+        <button onclick="location.reload()" style="margin-top:30px; background:#6c757d; font-size:14px;">Cerrar Sesión</button>
     </div>
 
     <script>
-        // TU ENLACE CSV REAL
-        const csvUrl = "https://docs.google.com/spreadsheets/d/e/2PACX-1vRUzvNCSD2wN-L-UM4h7gQu3nb9dad_j6WYMzwn7zj3n_c4vpZucNHcHdU-ECFcLogBz2OF5ndZBS__/pub?gid=1327205092&single=true&output=csv";
+        // Enlace DIRECTO al Plan de Siembra (CSV)
+        const csvUrl = "https://docs.google.com/spreadsheets/d/e/2PACX-1vRUzvNCSD2wN-L-UM4h7gQu3nb9dad_j6WYMzwn7zj3n_c4vpZucNHcHdU-ECFcLogBz2OF5ndZBS__/pub?gid=1327205092&single=true&output=csv"; 
 
-        function log(msg) {
-            const logBox = document.getElementById('logs');
-            logBox.innerHTML += "<br>> " + msg;
-            console.log(msg);
-        }
-
-        async function iniciarDiagnostico() {
-            // 1. Verificar si el botón responde
-            alert("¡El botón funciona! Iniciando conexión...");
-            log("Botón presionado. Iniciando...");
+        async function loadDashboard() {
+            const btn = document.querySelector('button');
+            btn.innerText = "Conectando...";
             
-            const clientId = document.getElementById('client-id').value.toUpperCase().trim();
-            const resultadoDiv = document.getElementById('resultado');
-            resultadoDiv.innerHTML = "⏳ Cargando...";
+            const clientIdInput = document.getElementById('client-id').value.toUpperCase().trim();
+            const container = document.getElementById('crops-container');
+            
+            // Fecha bonita
+            const hoy = new Date();
+            document.getElementById('fecha-hoy').innerText = hoy.toLocaleDateString('es-CO');
 
             try {
-                log("Intentando descargar CSV desde Google...");
                 const response = await fetch(csvUrl);
-                
-                if (!response.ok) {
-                    throw new Error("Error de red: " + response.status);
-                }
-
                 const data = await response.text();
-                log("¡Datos descargados! Tamaño: " + data.length + " caracteres.");
                 
+                // Switch de Pantalla
+                document.getElementById('login-section').style.display = 'none';
+                document.getElementById('dashboard').style.display = 'block';
+                document.getElementById('dash-id').innerText = clientIdInput;
+                document.getElementById('user-display').innerText = clientIdInput;
+
                 // Detectar separador
-                const separator = data.indexOf(';') > -1 ? ';' : ',';
-                log("Separador detectado: '" + separator + "'");
-
+                let separator = data.indexOf(';') > -1 ? ';' : ',';
                 const rows = data.split('\n');
-                log("Filas encontradas: " + rows.length);
 
-                let html = "";
-                let encontrado = false;
+                container.innerHTML = ''; 
+                let found = false;
 
-                // Buscar C-001
+                // Recorrer filas
+                // ASUMIENDO COLUMNAS: [0]ID, [1]Era, [2]Cliente, [3]Cultivo, [4]Fecha, [5]Dias_Total, [6]Estado, [7]Tarea
                 for (let i = 1; i < rows.length; i++) {
                     const row = rows[i].split(separator);
-                    if (row.length < 3) continue;
+                    if (row.length < 5) continue;
 
-                    // Limpieza agresiva de datos
-                    const rawClient = row[2] ? row[2].replace(/['"\r]/g, '').trim() : "VACIO";
+                    // Limpiar Cliente
+                    const dbClient = row[2] ? row[2].replace(/['"\r]/g, '').trim() : "";
                     
-                    if (rawClient === clientId) {
-                        encontrado = true;
-                        const cultivo = row[3] || "Desconocido";
-                        const estado = row[6] || "Desconocido";
+                    if (dbClient === clientIdInput) {
+                        found = true;
                         
-                        html += `<div class='card'><strong>${cultivo}</strong><br>Estado: ${estado}</div>`;
-                        log("Encontrado cultivo: " + cultivo);
+                        // Datos
+                        const cultivo = row[3] ? row[3].replace(/['"]/g, '') : "Cultivo";
+                        const fechaStr = row[4] ? row[4].replace(/['"]/g, '') : "";
+                        const diasTotal = parseInt(row[5] ? row[5].replace(/['"]/g, '') : "0");
+                        const estado = row[6] ? row[6].replace(/['"]/g, '') : "En Proceso";
+                        const tarea = row[7] ? row[7].replace(/['"\r]/g, '') : "";
+
+                        // CÁLCULO MATEMÁTICO DEL PORCENTAJE
+                        const fechaSiembra = new Date(fechaStr);
+                        const diffTime = Math.abs(hoy - fechaSiembra);
+                        const diasTranscurridos = Math.ceil(diffTime / (1000 * 60 * 60 * 24)); 
+                        
+                        let porcentaje = 0;
+                        if (diasTotal > 0 && !isNaN(diasTotal)) {
+                            porcentaje = (diasTranscurridos / diasTotal) * 100;
+                        }
+                        
+                        // Limites visuales (0% a 100%)
+                        let visualPercent = porcentaje;
+                        if (visualPercent > 100) visualPercent = 100;
+                        if (visualPercent < 0) visualPercent = 0;
+
+                        // HTML de la Tarjeta
+                        const card = `
+                            <div class="card">
+                                <div class="card-header">
+                                    <h3>🌱 ${cultivo}</h3>
+                                    <span class="status-badge">${estado}</span>
+                                </div>
+                                <div class="meta-info">
+                                    📅 Sembrado el: <strong>${fechaStr}</strong> | ⏱️ Ciclo de ${diasTotal} días
+                                </div>
+                                <div class="progress-container">
+                                    <div class="progress-bar" style="width: ${visualPercent}%"></div>
+                                    <div class="progress-text">${visualPercent.toFixed(1)}% Completado</div>
+                                </div>
+                                <div style="margin-top:10px; font-size:0.85rem; color:#444;">
+                                    📝 <strong>Actividad actual en huerta:</strong> ${tarea || "Monitoreo y Riego"}
+                                </div>
+                            </div>
+                        `;
+                        container.innerHTML += card;
                     }
                 }
 
-                if (encontrado) {
-                    resultadoDiv.innerHTML = "<h3>✅ Cultivos Encontrados:</h3>" + html;
-                    log("Proceso terminado con éxito.");
-                } else {
-                    resultadoDiv.innerHTML = "❌ No se encontraron datos para " + clientId;
-                    log("No hubo coincidencias en el Excel.");
-                    // Imprimir primeros 3 clientes para ver qué está leyendo
-                    log("Muestra de clientes en Excel: " + rows[1].split(separator)[2] + ", " + rows[2].split(separator)[2]);
+                if (!found) {
+                    container.innerHTML = `
+                        <div style="text-align:center; padding:20px;">
+                            <h3>🔍 No encontramos cultivos para ${clientIdInput}</h3>
+                            <p>Verifica que el código esté bien escrito o que ya tengas siembras registradas en el sistema.</p>
+                            <button onclick="location.reload()" style="background:#999">Intentar de nuevo</button>
+                        </div>`;
                 }
 
             } catch (error) {
-                alert("Error: " + error.message);
-                log("ERROR CRÍTICO: " + error.message);
-                resultadoDiv.innerHTML = "⚠️ Error técnico. Mira el log abajo.";
+                console.error(error);
+                alert("Hubo un error cargando los datos. Revisa la consola.");
             }
         }
     </script>
